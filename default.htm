@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Wijmo and React</title>
+
+    <!-- Bootstrap, React -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+
+    <!-- JSX: https://facebook.github.io/react/docs/jsx-in-depth.html -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+
+    <!-- Wijmo -->
+    <link href="http://cdn.wijmo.com/5.latest/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.input.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.grid.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.chart.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.gauge.min.js" type="text/javascript"></script>
+
+    <!-- app scripts and styles -->
+    <link href="styles/app.css" rel="stylesheet" type="text/css" />
+    <script src="scripts/wijmo.react.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <!-- to use JSX in our HTML -->
+        <script type="text/babel">
+
+            // app model
+            var names = 'Abraham,Andrew,Carter,Charles,Daniel,David,Edward,Gunning,Jacob,John,Josiah,Pierce,Richard,Samuel,Simon,Thomas,William'.split(','),
+                count = 20,
+                startDate = wijmo.DateTime.addDays(new Date(), -count),
+                data = [];
+            for (var i = 0; i < 20; i++) {
+                data.push({
+                    id: i,
+                    name: names[i % names.length],
+                    sales: Math.random() * 1000,
+                    expenses: Math.random() * 500,
+                    downloads: Math.random() * 2000,
+                    active: i % 2 == 0,
+                    date: wijmo.DateTime.addDays(startDate, i)
+                });
+            }
+
+            var App = React.createClass({
+
+                // initialize model: 
+                // declare view and current item, 
+                // update state when current item changes
+                getInitialState: function() {
+                    var _this = this,
+                        view = new wijmo.collections.CollectionView(data);
+                    view.currentChanged.addHandler(function(s, e) {
+                        _this.forceUpdate();
+                    });
+                    return {
+                        names: names,
+                        view: view,
+                    }
+                },
+
+                // two-way bindings
+                salesChanged: function(s, e) {
+                    this.state.view.currentItem.sales = s.value;
+                    this.state.view.refresh();
+                    this.forceUpdate();
+                },
+                dateChanged: function(s, e) {
+                    this.state.view.currentItem.date = s.value;
+                    this.state.view.refresh();
+                    this.forceUpdate();
+                },
+                nameChanged: function(s, e) {
+                    this.state.view.currentItem.name = s.text;
+                    this.state.view.refresh();
+                    this.forceUpdate();
+                },
+
+                // store a reference to the grid after it's initialized
+                initGrid: function(s, e) {
+                    this.state.theGrid = s;
+                    this.forceUpdate();
+                },
+
+                // render the view
+                render: function() {
+                    return <div>
+                        <div className="header">
+                            <div className="container">
+                                <img src="resources/wj-react.png" alt="Wijmo Vue logo" />
+                                <h1>
+                                    Wijmo and React
+                                </h1>
+                            </div>
+                        </div>
+
+                        <div id="app" className="container">
+                            <p>
+                                <a href="https://facebook.github.io/react/">React</a> is facebook's library for
+                                building user interfaces in JavaScript. React is unique and incredibly popular,
+                                so we won't spend any time discussing it here. If you are interested in 
+                                a quick introduction to React and a comparison between it and other frameworks/libraries,
+                                here's a <a href="https://medium.freecodecamp.com/angular-2-versus-react-there-will-be-blood-66595faafd51#.sh9r69w1d">
+                                great article on that topic</a>.</p>
+                            <p>
+                                This sample shows how you can easily package Wijmo controls into <b>React</b> components.
+                                It has a main component that contains some random data, and several Wijmo controls all
+                                bound to the same data. If you use any control to modify the data, the changes are
+                                automatically reflected on all other controls on the page.</p>
+
+                            <h3>
+                                FlexGrid
+                            </h3>
+                            <p>
+                                Let's begin by showing some data on an editable <b>FlexGrid</b> control:</p>
+
+                            <WjFlexGrid
+                                autoGenerateColumns={false}
+                                columns={[
+                                    { binding: 'name', header: 'Name' },
+                                    { binding: 'sales', header: 'Sales', format: 'c0' },
+                                    { binding: 'expenses', header: 'Expenses', format: 'c0' },
+                                    { binding: 'active', header: 'Active' },
+                                    { binding: 'date', header: 'Date' }
+                                ]}
+                                itemsSource={this.state.view}
+                                initialized={this.initGrid}>
+                            </WjFlexGrid>
+
+                            <p>
+                                All Wijmo React components expose an "initialized" pseudo-event that 
+                                allows you to add the control to your component state. This way you 
+                                can use the control in your markup. For example, the grid above 
+                                has <b>{ this.state.theGrid ? this.state.theGrid.rows.length : 0 }</b> rows.
+                            </p>
+
+                            <h3>
+                                FlexChart
+                            </h3>
+                            <p>
+                                Next, let's show the same data as a chart using the <b>FlexChart</b> control:</p>
+
+                            <WjFlexChart 
+                                itemsSource={this.state.view}
+                                bindingX="country"
+                                selectionMode="Point"
+                                series={[
+                                    { name: 'Sales', binding: 'sales' },
+                                    { name: 'Expenses', binding: 'expenses' },
+                                    { name: 'Downloads', binding: 'downloads', chartType: 'LineSymbols' }
+                                ]}>
+                            </WjFlexChart>
+
+                            <p>
+                                The chart is bound to the same <b>CollectionView</b> as the grid, so if you 
+                                edit or sort the data on the grid, the changes will be automatically be 
+                                reflected on the chart.</p>
+                            <p>
+                                The <b>selectionMode</b> property of the chart is set to "Point", so you when 
+                                you click a point on the chart it will select the corresponding item.</p>
+
+                            <h3>
+                                Gauges
+                            </h3>
+                            <p>
+                                Here's two gauges bound to the current customer's sales.
+                                You can use the gauges to see and also to edit the sales amount.</p>
+
+                            <WjLinearGauge
+                                min={0}
+                                max={1000}
+                                step={50}
+                                format="c0"
+                                thumbSize={20}
+                                isReadOnly={false}
+                                showRanges={false}
+                                value={this.state.view.currentItem.sales}
+                                valueChanged={this.salesChanged}
+                                face={ {thickness:0.5} }
+                                pointer={ {thickness:0.5} }
+                                ranges={[
+                                    { min: 0, max: 333, color: 'red' },
+                                    { min: 333, max: 666, color: 'gold' },
+                                    { min: 666, max: 1000, color: 'green' }
+                                ]}>
+                            </WjLinearGauge>
+
+                            <WjRadialGauge 
+                                min={0}
+                                max={1000}
+                                step={50}
+                                format="c0"
+                                showText="Value"
+                                thumbSize={12}
+                                isReadOnly={false}
+                                showRanges={false}
+                                value={this.state.view.currentItem.sales}
+                                valueChanged={this.salesChanged}
+                                face={{thickness:0.08}}
+                                pointer={{thickness:0.08}}
+                                ranges={[
+                                    { min: 0, max: 333, color: 'red' },
+                                    { min: 333, max: 666, color: 'gold' },
+                                    { min: 666, max: 1000, color: 'green' }
+                                ]}>
+                            </WjRadialGauge>
+
+                            <h3>
+                                Input Controls
+                            </h3>
+                            <p>
+                                This section shows several input controls bound to the current item's properties:</p>
+                            <table className="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>Name:</td>
+                                        <td>
+                                            <WjComboBox
+                                                value={this.state.view.currentItem.name}
+                                                itemsSource={this.state.names}
+                                                isEditable={true}
+                                                required={false}
+                                                placeholder="Name"
+                                                textChanged={this.nameChanged}>
+                                            </WjComboBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sales:</td>
+                                        <td>
+                                            <WjInputNumber
+                                                value={this.state.view.currentItem.sales}
+                                                valueChanged={this.salesChanged}
+                                                step={100}
+                                                format="c">
+                                            </WjInputNumber>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date/Time:</td>
+                                        <td>
+                                            <WjInputDate
+                                                value={this.state.view.currentItem.date}
+                                                valueChanged={this.dateChanged}
+                                                format="MMM dd, yyyy">
+                                            </WjInputDate>
+                                            <WjInputTime
+                                                value={this.state.view.currentItem.date}
+                                                valueChanged={this.dateChanged}>
+                                            </WjInputTime>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>DateTime:</td>
+                                        <td>
+                                            <WjInputDateTime
+                                                value={this.state.view.currentItem.date}
+                                                valueChanged={this.dateChanged}>
+                                            </WjInputDateTime>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>;
+                }
+            });
+
+            ReactDOM.render(
+                <App/>,
+                document.getElementById('app')
+            );
+        </script>
+    </div>
+</body>
+
+</html>
