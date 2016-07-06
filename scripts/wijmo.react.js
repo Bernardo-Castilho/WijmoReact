@@ -15,20 +15,32 @@ var wijmo;
         function mount(component, controlType) {
             // instantiate the control
             var host = ReactDOM.findDOMNode(component), control = new controlType(host), cprops = component.props;
-            // copy id and class from component to host element
-            if (cprops.id) {
-                host.id = cprops.id;
-            }
-            if (cprops.className) {
-                wijmo.addClass(host, cprops.className);
-            }
-            // initialize the control with properties and event handlers
+            // initialize the control with properties and event handlers,
+            // and the host element with the regular HTML properties
             var props = {};
             for (var prop in cprops) {
                 if (prop in control) {
+                    // save property to assign to control later
                     props[prop] = cprops[prop];
                 }
+                else {
+                    // assign property to host element
+                    switch (prop) {
+                        case 'className':
+                            wijmo.addClass(host, cprops.className);
+                            break;
+                        case 'style':
+                            wijmo.setCss(host, cprops.style);
+                            break;
+                        default:
+                            if (host[prop] != null) {
+                                host[prop] = cprops[prop];
+                            }
+                            break;
+                    }
+                }
             }
+            // apply saved props to control
             control.initialize(props);
             // update 'xxx' properties in response to 'xxxChanged' events
             for (var prop in control) {
