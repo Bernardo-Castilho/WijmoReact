@@ -7,23 +7,26 @@ var wijmo;
     (function (react) {
         // gets the control associated with a component
         function getControl(component) {
-            var el = ReactDOM.findDOMNode(component);
-            return wijmo.Control.getControl(el);
+            var host = ReactDOM.findDOMNode(component);
+            return wijmo.Control.getControl(host);
         }
         react.getControl = getControl;
         // mounts a new control onto a component
         function mount(component, controlType) {
             // instantiate the control
-            var el = ReactDOM.findDOMNode(component), control = new controlType(el);
-            // add class names to host element (React uses 'className' instead of just 'class')
-            if (component.props.className) {
-                wijmo.addClass(el, component.props.className);
+            var host = ReactDOM.findDOMNode(component), control = new controlType(host), cprops = component.props;
+            // copy id and class from component to host element
+            if (cprops.id) {
+                host.id = cprops.id;
+            }
+            if (cprops.className) {
+                wijmo.addClass(host, cprops.className);
             }
             // initialize the control with properties and event handlers
             var props = {};
-            for (var prop in component.props) {
+            for (var prop in cprops) {
                 if (prop in control) {
-                    props[prop] = component.props[prop];
+                    props[prop] = cprops[prop];
                 }
             }
             control.initialize(props);
@@ -47,9 +50,8 @@ var wijmo;
                 }
             }
             // fire initialize event
-            var initialized = component.props['initialized'];
-            if (wijmo.isFunction(initialized)) {
-                initialized(control);
+            if (wijmo.isFunction(cprops.initialized)) {
+                cprops.initialized(control);
             }
             // done creating the control
             return control;
