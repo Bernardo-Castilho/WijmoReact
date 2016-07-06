@@ -29,17 +29,19 @@ var wijmo;
             control.initialize(props);
             // update 'xxx' properties in response to 'xxxChanged' events
             for (var prop in control) {
-                var event = control[prop];
-                if (event instanceof wijmo.Event) {
-                    var m = prop.match(/(\w+)Changed/);
-                    if (m && m.length) {
-                        prop = m[1];
-                        if (control[prop] != null && component.props[prop] != null) {
-                            event.addHandler(_update.bind({
-                                component: component,
-                                control: control,
-                                prop: prop
-                            }));
+                if (!prop.match(/disabled|required/)) {
+                    var event = control[prop];
+                    if (event instanceof wijmo.Event) {
+                        var m = prop.match(/(\w+)Changed/);
+                        if (m && m.length) {
+                            prop = m[1];
+                            if (control[prop] != null && component.props[prop] != null) {
+                                event.addHandler(_update.bind({
+                                    component: component,
+                                    control: control,
+                                    prop: prop
+                                }));
+                            }
                         }
                     }
                 }
