@@ -120,7 +120,7 @@
                             <p>
                                 Let's begin by showing some data on an editable <b>FlexGrid</b> control:</p>
 
-                            <WjFlexGrid
+                            <Wj.FlexGrid
                                 autoGenerateColumns={false}
                                 columns={[
                                     { binding: 'name', header: 'Name' },
@@ -131,7 +131,7 @@
                                 ]}
                                 itemsSource={this.state.view}
                                 initialized={this.initGrid}>
-                            </WjFlexGrid>
+                            </Wj.FlexGrid>
 
                             <p>
                                 All Wijmo React components expose an "initialized" pseudo-event that 
@@ -146,7 +146,7 @@
                             <p>
                                 Next, let's show the same data as a chart using the <b>FlexChart</b> control:</p>
 
-                            <WjFlexChart 
+                            <Wj.FlexChart 
                                 itemsSource={this.state.view}
                                 bindingX="country"
                                 selectionMode="Point"
@@ -155,7 +155,7 @@
                                     { name: 'Expenses', binding: 'expenses' },
                                     { name: 'Downloads', binding: 'downloads', chartType: 'LineSymbols' }
                                 ]}>
-                            </WjFlexChart>
+                            </Wj.FlexChart>
 
                             <p>
                                 The chart is bound to the same <b>CollectionView</b> as the grid, so if you 
@@ -172,7 +172,7 @@
                                 Here's two gauges bound to the current customer's sales.
                                 You can use the gauges to see and also to edit the sales amount.</p>
 
-                            <WjLinearGauge
+                            <Wj.LinearGauge
                                 min={0}
                                 max={1000}
                                 step={50}
@@ -189,9 +189,9 @@
                                     { min: 333, max: 666, color: 'gold' },
                                     { min: 666, max: 1000, color: 'green' }
                                 ]}>
-                            </WjLinearGauge>
+                            </Wj.LinearGauge>
 
-                            <WjRadialGauge 
+                            <Wj.RadialGauge 
                                 min={0}
                                 max={1000}
                                 step={50}
@@ -209,7 +209,7 @@
                                     { min: 333, max: 666, color: 'gold' },
                                     { min: 666, max: 1000, color: 'green' }
                                 ]}>
-                            </WjRadialGauge>
+                            </Wj.RadialGauge>
 
                             <h3>
                                 Input Controls
@@ -221,48 +221,48 @@
                                     <tr>
                                         <td>Name:</td>
                                         <td>
-                                            <WjComboBox
-                                                value={this.state.view.currentItem.name}
+                                            <Wj.ComboBox
+                                                text={this.state.view.currentItem.name}
+                                                textChanged={this.nameChanged}
                                                 itemsSource={this.state.names}
                                                 isEditable={true}
-                                                required={false}
-                                                placeholder="Name"
-                                                textChanged={this.nameChanged}>
-                                            </WjComboBox>
+                                                isRequired={false}
+                                                placeholder="Name">
+                                            </Wj.ComboBox>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Sales:</td>
                                         <td>
-                                            <WjInputNumber
+                                            <Wj.InputNumber
                                                 value={this.state.view.currentItem.sales}
                                                 valueChanged={this.salesChanged}
                                                 step={100}
                                                 format="c">
-                                            </WjInputNumber>
+                                            </Wj.InputNumber>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Date/Time:</td>
                                         <td>
-                                            <WjInputDate
+                                            <Wj.InputDate
                                                 value={this.state.view.currentItem.date}
                                                 valueChanged={this.dateChanged}
                                                 format="MMM dd, yyyy">
-                                            </WjInputDate>
-                                            <WjInputTime
+                                            </Wj.InputDate>
+                                            <Wj.InputTime
                                                 value={this.state.view.currentItem.date}
                                                 valueChanged={this.dateChanged}>
-                                            </WjInputTime>
+                                            </Wj.InputTime>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>DateTime:</td>
                                         <td>
-                                            <WjInputDateTime
+                                            <Wj.InputDateTime
                                                 value={this.state.view.currentItem.date}
                                                 valueChanged={this.dateChanged}>
-                                            </WjInputDateTime>
+                                            </Wj.InputDateTime>
                                         </td>
                                     </tr>
                                 </tbody>
