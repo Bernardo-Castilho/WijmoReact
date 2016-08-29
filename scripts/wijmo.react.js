@@ -1,4 +1,16 @@
-﻿/**
+﻿/*
+    *
+    * Wijmo Library 5.20162.201
+    * http://wijmo.com/
+    *
+    * Copyright(c) GrapeCity, Inc.  All rights reserved.
+    *
+    * Licensed under the Wijmo Commercial License.
+    * sales@wijmo.com
+    * http://wijmo.com/products/wijmo-5/license/
+    *
+    */
+/**
  * Wijmo interop module for <a href="https://facebook.github.io/react/">React</a>.
  *
  * This module provides React components that encapsulate Wijmo controls.
@@ -527,7 +539,7 @@ var wijmo;
         }
         // disposes of the control associated with a component
         function _unmount(component) {
-            _getControl(this).dispose();
+            _getControl(component).dispose();
         }
         // updates the control properties to match its associated component
         function _updateControl(component, nextProps) {
