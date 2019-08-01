@@ -1,5 +1,5 @@
 # WijmoReact
-Wijmo 5 components for React (grid, chart, gauge, inputs)..
+Wijmo 5 components for React (grid, chart, gauge, inputs).
 
 [React](https://facebook.github.io/react/) is facebook's library for
 building user interfaces in JavaScript. React is unique and incredibly popular,
